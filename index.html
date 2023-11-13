@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>REST API project</title>
+</head>
+<body>
+    <div id="signin">
+        <form>
+            <label for="name">Item Name</label>
+            <input type="text" placeholder="Enter the Item name" name="name">
+            <label for="name">Description</label>
+            <input type="text" placeholder="Enter the email id" name="email">
+            <label for="price">Price</label>
+            <input type="number" placeholder="Enter the Price" name="price">
+            <label for="quantity">Quantity</label>
+            <input type="number" placeholder="Enter the Quantity" name="quantity">
+            <button>Add Item</button>
+        </form>
+
+    </div>
+    <div class="list">
+        <h1>Product details</h1>
+    </div>
+
+    <!-- <script src="script.js"></script> -->
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.1/axios.min.js"></script>
+   <script>
+    let sub_btn=document.querySelector("button")
+   let list_div=document.querySelector(".list")
+
+//storing multiple user details
+let input_box=document.querySelectorAll("input")
+sub_btn.addEventListener("click",(e)=>{
+    e.preventDefault()
+       let itemname=e.target.parentElement.children[1].value
+   let desc=e.target.parentElement.children[3].value
+   let price=e.target.parentElement.children[5].value
+   let quantity=e.target.parentElement.children[7].value
+   let prod_details={
+    "itemname":itemname,
+    "desc":desc,
+    "price":price,
+    "quantity":quantity
+   }
+   console.log(prod_details)
+   //post appoinmentnt data
+   axios.post("https://crudcrud.com/api/cec070320fe64c0aa0d5edf899d7e5f6/StoreSeller",prod_details)
+   .then(res=>showProducts(res.data))
+   .catch(rej=>console.log(rej))
+})
+
+//Getting appoinment data
+let main_data=[]
+window.addEventListener("DOMContentLoaded",()=>{
+    axios.get("https://crudcrud.com/api/cec070320fe64c0aa0d5edf899d7e5f6/StoreSeller")
+.then(res=>showProducts(res.data)
+)
+.catch(rej=>console.log(rej))
+
+
+})
+
+
+
+
+//displaying user details
+
+function showProducts(data){
+    console.log(data)
+data.forEach(e => {
+    // <div class="row">
+    //     <h6>kfljkn</h6>
+    //     <h6>fkdjf</h6>
+    //     <h6>kdhk</h6>
+    //     <button class="btn btn-danger btn-sm float-right delete">X</button>
+    //<button class="btn btn-sm btn-sm float-right edit">✏️</button>
+    //   </div>
+
+    let row_div=document.createElement("div")
+    row_div.setAttribute("class","row")
+
+    let name_h6=document.createElement("h6")
+    name_h6.innerText=e.itemname
+
+    let desc_h6=document.createElement("h6")
+    desc_h6.innerText=e.desc
+
+    let price_h6=document.createElement("h6")
+    price_h6.innerText=`${e.price}rs`
+
+    let quant_h6=document.createElement("h6")
+    quant_h6.innerText=e.quantity
+
+    let buy1_btn=document.createElement("button")
+    buy1_btn.setAttribute("class","btn btn-sm btn-sm float-right edit")
+    buy1_btn.setAttribute("cnt",1)
+    buy1_btn.setAttribute("data",e._id)
+    buy1_btn.innerText="Buy1"
+    
+    let buy2_btn=document.createElement("button")
+    buy2_btn.setAttribute("class","btn btn-sm btn-sm float-right edit")
+    buy2_btn.setAttribute("cnt",2)
+    buy2_btn.setAttribute("data",e._id)
+    buy2_btn.innerText="Buy2"
+    let buy3_btn=document.createElement("button")
+    buy3_btn.setAttribute("class","btn btn-sm btn-sm float-right edit")
+    buy3_btn.setAttribute("cnt",3)
+    buy3_btn.setAttribute("data",e._id)
+    buy3_btn.innerText="Buy3"
+
+    row_div.append(name_h6)
+    row_div.append(desc_h6)
+    row_div.append(price_h6)
+    row_div.append(quant_h6)
+    row_div.append(buy1_btn)
+    row_div.append(buy2_btn)
+    row_div.append(buy3_btn)
+    list_div.append(row_div)
+   
+    let edit1_button=document.querySelectorAll(".edit")
+
+edit1_button.forEach((event)=>{
+    event.addEventListener("click",(el)=>{
+        let val=el.target.getAttribute("data")
+        let cnt=Number(el.target.getAttribute("cnt"))
+let update_val=Number(el.target.parentElement.children[3].innerText)
+let item=el.target.parentElement.children[0].innerText
+let up_desc=el.target.parentElement.children[1].innerText
+let up_price=el.target.parentElement.children[2].innerText
+         axios.put(`https://crudcrud.com/api/cec070320fe64c0aa0d5edf899d7e5f6/StoreSeller/${val}`,
+         {
+            "itemname":item,
+              "desc":up_desc,
+             "price":up_price,
+            "quantity":update_val-cnt
+         })
+        .then(res=>console.log(res))
+        .catch(rej=>console.log(rej))
+        
+    })
+})
+
+});
+}
+
+</script>
+</body>
+</html>
